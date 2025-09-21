@@ -23,9 +23,65 @@
 
         </div>
         <script>
-            function getData() {
- 
-            }
+            async function getData() {
+            try {
+                const response = await axios.get("/data",{
+                    "params": {
+                    limit: document.getElementById("limit").value,
+                    type: document.getElementById("type").value
+                        }
+                    })
+                    createTable(response.data);
+                    function createTable(dataObj) {
+                        const resultDiv = document.getElementById("result");
+
+                        // clear content everytime this function is ran
+                        while (resultDiv.firstChild) {
+                            resultDiv.firstChild.remove();
+                        }
+                        // create H2 element
+                        const h2Elem = document.createElement("h2");
+                        const h2Val = dataObj["type"];
+                        h2Elem.innerText = h2Val;
+                        resultDiv.appendChild(h2Elem);
+
+                        const tableElem = document.createElement("table");
+                        tableElem.className = "table";
+                        const tBodyElem = document.createElement("tbody");
+                        const trElem = document.createElement("tr");
+                        const tableheadings = Object.keys(dataObj["records"][0]);
+                        for (const eachheading of tableheadings) {
+                            const thElem = document.createElement("th");
+                            thElem.innerText = eachheading;
+                            trElem.appendChild(thElem);
+                        }
+                        tBodyElem.appendChild(trElem);
+                        tableElem.appendChild(tBodyElem);
+                        resultDiv.appendChild(tableElem);
+
+                        const everything =  dataObj["records"];
+                        for (const listable of everything) {
+                            const trElem = document.createElement("tr");
+                            for (const key in listable) {
+                            const datapoint = listable[key];
+                            const tdElem = document.createElement("td");
+                            tdElem.innerText = datapoint;
+                            trElem.appendChild(tdElem);
+                            }
+                            tBodyElem.appendChild(trElem);
+                        }
+
+                    }
+                } catch (error) {
+                    console.log(error)
+                }
+            
+
+                }
+            
+                    
+                
+            
 
         </script>
 </body>
